@@ -1,21 +1,44 @@
 /*============================================; 
-Title: Assignment 6.4; 
+Title: Assignment 7.4; 
 Author: Professor Krasso ; 
-Date: 12 September 2020; 
+Date: 18 September 2020; 
 Modified By: Douglas Jenkins; 
 Description: Building a site using ejs
 ;===========================================*/
 
-console.log("Douglas", "Jenkins", "Exercise 6.4");
+console.log("Douglas", "Jenkins", "Exercise 7.4");
 console.log ('\n');
 
 // require statements
 var express = require('express');
 var http = require("http");
+var mongoose = require("mongoose");
 var path = require("path");
 var logger = require("morgan");
 
+var employee = require("./models/employee")
 var app = express();
+
+//mLab connection
+var mongoDB = "mongodb+srv://admin:Shameca22@buwebdev-cluster-1.s2m0w.mongodb.net/test";
+
+mongoose.connect(mongoDB, {
+
+    useMongoClient: true   
+});
+
+mongoose.Promise = global.Promise;
+
+var db = mongoose.connection;
+
+db.on("error", console.error.bind(console, "MongoDB connection error: "));
+
+db.once("open", function() {
+
+    console.log("Application connected to mLab MongoDB instance");
+
+});
+
 
 app.set("views", path.resolve(__dirname, "views"));
 // calls for the styles
@@ -26,6 +49,12 @@ app.use("/images",express.static(__dirname + "/images"));
 app.set("view engine", "ejs");
 
 app.use(logger("short"));
+
+// creates model
+var employee = new Employee({
+    firstName: employeeFirst,
+    lastName: employeeLast
+});
 
 app.get("/index", function (request, response){
     response.render("index", {

@@ -23,5 +23,5 @@ let employeeSchema = new Schema ({
 });
 
 //expose the employee to calling files
-var employee = mongoose.model('employee', employeeSchema);
-module.exports = employee;
+var Employee = mongoose.model('Employee', employeeSchema);
+module.exports = Employee;

@@ -1,12 +1,12 @@
 /*============================================; 
-Title: Assignment 7.4; 
+Title: Assignment 8.4; 
 Author: Professor Krasso ; 
 Date: 18 September 2020; 
 Modified By: Douglas Jenkins; 
 Description: Building a site using ejs
 ;===========================================*/
 
-console.log("Douglas", "Jenkins", "Exercise 7.4");
+console.log("Douglas", "Jenkins", "Exercise 8.4");
 console.log ('\n');
 
 // require statements
@@ -15,31 +15,36 @@ var http = require("http");
 var mongoose = require("mongoose");
 var path = require("path");
 var logger = require("morgan");
+var helmet = require("helmet");
+var bodyParser = require("body-parser");
+var cookieParser = require("cookie-parser");
+var csrf = require("csurf");
+var Employee = require('./models/employee');
 
-var employee = require("./models/employee")
+
+// setup csrf protection
+var csrfProtection = csrf({cookie:true});
+
+// express application 
 var app = express();
 
 //mLab connection
 var mongoDB = "mongodb+srv://admin:Shameca22@buwebdev-cluster-1.s2m0w.mongodb.net/test";
 
 mongoose.connect(mongoDB, {
-
     useMongoClient: true   
 });
 
 mongoose.Promise = global.Promise;
-
 var db = mongoose.connection;
-
 db.on("error", console.error.bind(console, "MongoDB connection error: "));
 
 db.once("open", function() {
-
     console.log("Application connected to mLab MongoDB instance");
-
 });
 
 
+// app functions to call from folders
 app.set("views", path.resolve(__dirname, "views"));
 // calls for the styles
 app.use("/styles",express.static(__dirname + "/styles"));
@@ -48,36 +53,55 @@ app.use("/images",express.static(__dirname + "/images"));
 
 app.set("view engine", "ejs");
 
+// use statements
 app.use(logger("short"));
+app.use(bodyParser.urlencoded({
+    extended:true
+}));
 
-// creates model
-var employee = new Employee({
-    firstName: employeeFirst,
-    lastName: employeeLast
+// cookie parser
+app.use(helmet.xssFilter());
+app.use(cookieParser());
+app.use(csrfProtection);
+
+
+// CSRF token
+app.use(function(request, response, next) {
+    var token = request.csrfToken();
+    response.cookie('XSRF-TOKEN', token);
+    response.locals.csrfToken = token;
+    next();
 });
 
-app.get("/index", function (request, response){
+
+
+app.get("/", function(request, response) {
+
     response.render("index", {
         title: "Welcome to Home Page",
-        message: "Welcome!!!"
+        message: "XSS Prevention Example"
+
     });
+
 });
 
 // creates for the list page
 
-app.get("/list", function (request, response){
-    response.render("list", {
-        title: "Welcome to List Page",
-        message: "Employee Records"
+app.get("/list", function(req,res){
+    Employee.find({}, function(error, employees){
+      if (error) throw error;
+      res.render("list",{
+        title: "Employee List",
+        employees: employees
+      });
     });
-});
+  });
 
 // creates for the data page
 
 app.get("/new", function (request, response){
     response.render("new", {
         title: "Welcome to Data Entry Page",
-        message: "Enter your Data Below"
     });
 });
 
@@ -92,8 +116,40 @@ app.get("/view", function (request, response){
 
 
 
-http.createServer(app).listen(8080, function() {
+// app post below
 
-    console.log("Application has started on port 8080!");
+app.post("/process", function(req,res){
+    console.log(req.body.txtName);
+    if(!req.body.txtName){
+      res.status(400).send("Entries must have a name");
+      return;
+    }
+    // get the req. form data
+    var employeeFirst = req.body.txtName;
+    console.log(employeeFirst);
+
+    var employeeLast = req.body.txtLast;
+    console.log(employeeLast);
+
+    //create employee model
+    var employee = new Employee({
+        firstName: employeeFirst,
+        lastName: employeeLast
+    });
+    // save function that redirects
+    employee.save(function(error){
+      if (error) 
+      throw error;
+      console.log(employeeFirst + ' ' + employeeLast +" saved successfully!!")
+    });
+    res.redirect("/list");
+  });
+
+  
+
+
+http.createServer(app).listen(7000, function() {
+
+    console.log("Application has started on port 7000!");
 
 });

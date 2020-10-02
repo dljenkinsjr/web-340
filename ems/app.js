@@ -1,7 +1,7 @@
 /*============================================; 
-Title: Assignment 8.4; 
+Title: Assignment 9.3; 
 Author: Professor Krasso ; 
-Date: 18 September 2020; 
+Date: 1 October 2020; 
 Modified By: Douglas Jenkins; 
 Description: Building a site using ejs
 ;===========================================*/
@@ -107,10 +107,23 @@ app.get("/new", function (request, response){
 
 // creates for the view page
 
-app.get("/view", function (request, response){
-    response.render("view", {
-        title: "Welcome to View Page",
-        message: "Our Team"
+app.get("/view/:queryName", function (request, response){
+    var queryName = request.params.queryName;
+
+    Employee.find({'firstName': queryName},
+    function(error,employees){
+       if (error) throw error;
+       console.log(employees);
+       if (employees.length>0){
+           response.render("view",{
+                title: "Employee Record",
+                employee: employees
+           })
+       
+        }
+        else{ 
+            response.redirect("/list")
+        }
     });
 });
 
@@ -147,9 +160,9 @@ app.post("/process", function(req,res){
 
   
 
-
-http.createServer(app).listen(7000, function() {
-
-    console.log("Application has started on port 7000!");
-
-});
+// creates the app to be displayed on port 8080
+  app.set("port", process.env.PORT || 8080);
+  http.createServer(app).listen(app.get("port"), 
+  function() { 
+      console.log("Application started on port " + app.get("port")) 
+  });

@@ -1,55 +1,25 @@
-<%- include("header") %>
-<%- include("navbar") %>
-<body>
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("header") %>
 
-    <h1><%= message %></h1>
-
-    <div class="bio">
-        <h3>Michael James</h3>
-        <h5>Programmer</h5>
-        <p> James has experience as a lead programmer with a track record of incorporating user and business 
-        requirements into cost-effective, secure and user-friendly solutions 
-        known for scalability and durability. He has Knowledge of commercial and open source software/database 
-        has shown to be a proven leader and project manager. James is also known as a innovator of 
-        next-generation solutions, systems and applications giving companies a competitive edge and producing 
-        outstanding results for customers.</p>
-
-    </div>
-
-    <div class="bio">
-        <h3>Sally Hopkins</h3>
-        <h5>Web Designer</h5>
-        <p>Sally Hopkins is a web designer and has worked internationally, 
-        in-house, and remotely on projects for leading brands, 
-        agencies, startups, and charities. She cares about creating world-class, useful, and beautiful 
-        products that help people and make a difference. She enjoys the process making sketches, creative direction, 
-        design, copywriting, system design, 
-        and even the front-end and WordPress build.</p>
+  <body>
+    <%- include("navbar") %>
+        <div role="main" class="container" style="width: 50%;">
+            <br><br>
+                <h2>--Employee Record--</h2>
+               <div>
+                   <div class="form-group">
+                        <label for="txtName">Name:</label>
+                        <input type="text" class="form-control" id="txtName" value="<%=employee[0].firstName %> <%= employee[0].lastName %>" name="txtName">
+                   </div>
+               </div>
+        <br><br>
+    <a href="/list">Return to Employees</href>
 
     </div>
-    
-    <div class="bio">
-        <h3>Chris Paul</h3>
-        <h5>Graphic Designer</h5>
-        <p>Chris has over 9 years of experience designing for the web and considers himself 
-        a standards enthusiast with a passion for visual design. 
-        He is very well versed in design trends and usability with a strong handle on CSS and HTML. 
-        As an ACD at AgencyNet, he has had the pleasure to work on a multitude of diverse brands such as 
-        Fuse, Oxygen Networks, Bacardi, Ruby Tuesday, iN Demand, Howard Stern, Warner Brothers and many more.</p>
+            
 
-    </div>
-    
-    <div class="bio">
-        <h3>Sarah Myers</h3>
-        <h5>UI/UX Designer</h5>
-        <p>Sarah has continually tested emerging tools and methods to find the most effective workflow. 
-        After years of designing and developing the interwebs, she knows her PNGs, PSDs, CLI, Git, IA, UI, UX and UAT. 
-        Most of her days are lived in white board sketches, 
-        flows, wireframes, mockups, wiki pages, test results, and of course Web Inspector. 
-        She admires multi-device strategy, design thinking, user testing, agile dev, and lean UX.</p>
-
-    </div>
-
-</body>
-
-<%- include("footer") %>
+    <%- include("footer") %>
+    <%- include("scripts") %>
+  </body>
+</html>

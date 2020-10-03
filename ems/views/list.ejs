@@ -20,7 +20,7 @@
             <tbody>
                 <% employees.forEach(function (entry) { %> 
                 <tr>
-                    <td><%= entry.name %></td>
+                    <td><%= entry.firstName %> <%= entry.lastName %></td>
                     <td><a href="/view/<%= entry.firstName %>">VIEW</a></td>
                 </tr>
             </tbody>
